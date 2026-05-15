@@ -26,6 +26,7 @@ export const userResZod = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string().email(),
+    role: z.enum(["ADMIN", "USER"]),
     createdAt: z.date(),
     updatedAt: z.date(),
 });
@@ -41,4 +42,11 @@ export type BaseResponseType<T> = {
     message: string;
     accessToken?: string | null;
     data: T;
+};
+
+export type UserRoleType = "ADMIN" | "USER";
+
+export type PayloadJwtType = {
+    id: string;
+    role: UserRoleType;
 };

@@ -2,6 +2,8 @@ import express, { urlencoded, type Request, type Response } from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import routerAuth from "./routes/auth.js";
+import { verifyToken } from "./middlewares/auth.middleware.js";
+import { errorHandler } from "./controllers/errorController.js";
 
 const app = express();
 app.use(
@@ -17,15 +19,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Khai báo Routes
+app.use(verifyToken);
+
 app.use("/auth", routerAuth);
 
-// Route mặc định để test
-app.get("/", (req: Request, res: Response) => {
-    res.json({
-        message: "Backend Express + TS đã sẵn sàng! 23234",
-        status: "Success",
-    });
-});
+app.use(errorHandler);
+
 try {
     // Kết nối Database
     await connectDB();

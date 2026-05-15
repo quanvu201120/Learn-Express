@@ -33,3 +33,8 @@ export const LoginUserService = async (email: string, password: string) => {
     }
     return user;
 };
+
+export const GetAllUsersService = async () => {
+    const list = await UserModel.find({ deleteAt: null }).lean();
+    return list;
+};
