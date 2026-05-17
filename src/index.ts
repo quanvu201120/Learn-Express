@@ -4,6 +4,7 @@ import connectDB from "./config/db.js";
 import routerAuth from "./routes/auth.js";
 import { verifyToken } from "./middlewares/auth.middleware.js";
 import { errorHandler } from "./controllers/errorController.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(
@@ -17,6 +18,7 @@ const PORT = process.env.PORT;
 // Middleware để đọc được dữ liệu JSON từ client gửi lên
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Khai báo Routes
 app.use(verifyToken);

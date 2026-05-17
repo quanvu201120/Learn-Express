@@ -3,6 +3,8 @@ import {
     createUser,
     GetUser,
     LoginUser,
+    LogoutUser,
+    RefreshToken,
 } from "../controllers/userController.js";
 import { validateReqBody } from "../middlewares/validate.middleware.js";
 import { loginBodyZod, registerBodyZod } from "../validations/auth.schema.js";
@@ -18,5 +20,7 @@ routerAuth.post("/admin", (req, res) => {
         data: null,
     });
 });
+routerAuth.post("/logout", LogoutUser);
+routerAuth.post("/refreshToken", RefreshToken);
 
 export default routerAuth;

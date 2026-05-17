@@ -3,7 +3,7 @@ import { ForbiddenError, UnauthorizedError } from "../utils/errors.js";
 import jwt from "jsonwebtoken";
 import type { PayloadJwtType } from "../validations/auth.schema.js";
 
-const whiteList = ["/auth/register", "/auth/login"];
+const whiteList = ["/auth/register", "/auth/login", "/auth/refreshToken"];
 const adminList = ["/auth/admin"];
 
 export const verifyToken = (
@@ -25,7 +25,7 @@ export const verifyToken = (
     try {
         const decoded = jwt.verify(
             token,
-            process.env.JWT_SECRET as string,
+            process.env.ACCESS_TOKEN_SECRET as string,
         ) as PayloadJwtType;
 
         if (adminList.some((route) => req.path.startsWith(route))) {

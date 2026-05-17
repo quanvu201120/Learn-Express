@@ -7,6 +7,12 @@ const userSchemaMongoose = new mongoose.Schema(
         password: { type: String, select: false },
         role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
         deleteAt: { type: String, default: null },
+        refreshToken: [
+            {
+                token: { type: String, require: true },
+                createdAt: { type: Date, default: Date.now },
+            },
+        ],
     },
     { timestamps: true },
 );

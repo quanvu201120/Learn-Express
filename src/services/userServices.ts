@@ -1,3 +1,4 @@
+import type { Response } from "express";
 import bcrypt from "bcryptjs";
 import { MONGO_ERROR_CODE, SALT_ROUNDS } from "../constants/httpCode.js";
 import { UserModel } from "../models/user.js";
@@ -27,6 +28,11 @@ export const LoginUserService = async (email: string, password: string) => {
     if (!user) {
         throw new UnauthorizedError("Email hoặc mật khẩu không chính xác");
     }
+
+    if (user.deleteAt) {
+        throw new UnauthorizedError("Tài khoản của bạn đã vô hiệu hóa");
+    }
+
     const comparePassword = await bcrypt.compare(password, user.password!);
     if (!comparePassword) {
         throw new UnauthorizedError("Email hoặc mật khẩu không chính xác");
@@ -37,4 +43,23 @@ export const LoginUserService = async (email: string, password: string) => {
 export const GetAllUsersService = async () => {
     const list = await UserModel.find({ deleteAt: null }).lean();
     return list;
+};
+
+export const RemoveRefreshTokenService = async (
+    token: string,
+    res: Response,
+) => {
+    try {
+        await UserModel.updateOne(
+            { "refreshToken.token": token },
+            { $pull: { refreshToken: { token: token } } },
+        );
+    } catch (error) {
+    } finally {
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+    }
 };
